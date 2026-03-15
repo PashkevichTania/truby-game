@@ -10,6 +10,8 @@ const PipeGame = () => {
     const COLS = 7;
 
     const [won, setWon] = useState(false);
+    const [startTime, setStartTime] = useState<number | null>(null);
+    const [finishTime, setFinishTime] = useState<number | null>(null);
 
     // Инициализация сетки с фиксированным начальным перемешиванием
     const initialGrid = TILE_DATA.map((type: Types, i) => ({
@@ -24,6 +26,8 @@ const PipeGame = () => {
     const handleRestart = () => {
         setGrid(initialGrid);
         setWon(false);
+        setStartTime(null);
+        setFinishTime(null);
     };
 
 
@@ -115,15 +119,20 @@ const PipeGame = () => {
         });
 
         setGrid(newGrid);
-        if (completedTargets.size === SOURCES.length) setWon(true);
+        if (completedTargets.size === SOURCES.length) {
+            setWon(true);
+            setFinishTime(Date.now());
+        }
     };
 
     const handleTileClick = (index: number) => {
-        const newGrid = [...grid];
+        if (!startTime) {
+            setStartTime(Date.now());
+        }
+        const newGrid = grid.map(tile => ({ ...tile, activeColors: [] })); // Сбрасываем цвета
         newGrid[index].rotation = (newGrid[index].rotation + 1) % 4;
         setGrid(newGrid);
-        // Опционально: сразу пересчитывать поток при клике
-        // calculateFlow(newGrid);
+        setWon(false); // Сбрасываем состояние победы
     };
 
     return (
@@ -183,6 +192,11 @@ const PipeGame = () => {
             {won && (
                 <div className="mt-8 text-green-400 font-bold animate-pulse text-xl">
                     ПОЗДРАВЛЯЕМ! ВСЕ ЛИНИИ СОЕДИНЕНЫ!
+                    {startTime && finishTime && (
+                        <div className="text-lg text-white mt-2">
+                            Время: {((finishTime - startTime) / 1000).toFixed(2)} сек.
+                        </div>
+                    )}
                 </div>
             )}
 
