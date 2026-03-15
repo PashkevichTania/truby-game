@@ -21,10 +21,10 @@ const Tile = ({ tile, onClick }: { tile: Tile, onClick: VoidFunction }) => {
             </div>
 
             {/* Маленький индикатор, если через плитку течет вода */}
-            {tile.activeColors.length > 0 && (
-                <div className="absolute top-1 right-1 w-2 h-2 rounded-full animate-pulse"
-                     style={{ backgroundColor: tile.activeColors[0] }} />
-            )}
+            {/*{tile.activeColors.length > 0 && (*/}
+            {/*    <div className="absolute top-1 right-1 w-2 h-2 rounded-full animate-pulse"*/}
+            {/*         style={{ backgroundColor: tile.activeColors[0] }} />*/}
+            {/*)}*/}
         </div>
     );
 };

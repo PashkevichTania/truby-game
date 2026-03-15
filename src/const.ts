@@ -1,4 +1,11 @@
 import type { Types } from "./types";
+// @ts-ignore
+import CarIcon from './assets/car.svg?react'
+// @ts-ignore
+import SwitchIcon from './assets/switch.svg?react'
+// @ts-ignore
+import CakeIcon from './assets/cake.svg?react'
+
 // Типы труб
 export const TYPES: Record<string, Types> = {
     CORNER: 'corner',
@@ -25,15 +32,14 @@ export const TILE_DATA= [
 ];
 
 // Источники (сверху) и Цели (снизу)
-// Позиции 2, 4, 6 соответствуют индексам 1, 3, 5
 export const SOURCES = [
-    {col: 1, color: '#4ade80', name: 'green'},
-    {col: 3, color: '#f87171', name: 'red'},
-    {col: 5, color: '#60a5fa', name: 'blue'}
+    {col: 1, color: '#60a5fa', name: 'blue', letter: 'Г'},
+    {col: 3, color: '#4ade80', name: 'green', letter: 'Н'},
+    {col: 5, color: '#f87171', name: 'red', letter: 'С'},
 ];
 
 export const TARGETS = [
-    {col: 1, color: '#60a5fa', name: 'blue'},
-    {col: 3, color: '#4ade80', name: 'green'},
-    {col: 5, color: '#f87171', name: 'red'}
+    {col: 1, color: '#4ade80', name: 'green', icon: CakeIcon },
+    {col: 3, color: '#f87171', name: 'red', icon: CarIcon },
+    {col: 5, color: '#60a5fa', name: 'blue', icon: SwitchIcon },
 ];
