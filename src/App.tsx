@@ -29,7 +29,7 @@ const PipeGame = () => {
     SOURCES.forEach(source => {
         // Начинаем: вода входит в верхний ряд (row 0) со стороны 0 (верх)
         // fromDir в очереди — это направление движения воды (2 = вниз)
-      const queue = [{ row: 0, col: source.col, fromDir: 0 }]; // 0 - вход сверху
+      const queue = [{ row: 0, col: source.col, fromDir: 2 }]; // 2 - вход сверху (вода пришла снизу от источника)
       const visited = new Set();
 
       while (queue.length > 0) {
