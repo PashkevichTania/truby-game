@@ -36,6 +36,19 @@ const PipeGame = () => {
         let newGrid = grid.map(tile => ({...tile, activeColors: []}));
         let completedTargets = new Set();
 
+        const getNeighborCoords = (r: number, c: number, side: number) => {
+            let nextR = r, nextC = c;
+            if (side === 0) nextR--;
+            if (side === 1) nextC++;
+            if (side === 2) nextR++;
+            if (side === 3) nextC--;
+            return {nextR, nextC};
+        };
+
+        const isValidCoord = (r: number, c: number) => {
+            return r >= 0 && r < ROWS && c >= 0 && c < COLS;
+        };
+
         SOURCES.forEach(source => {
             // Начинаем: вода входит в верхний ряд (row 0) со стороны 0 (верх)
             // fromDir в очереди — это направление движения воды (2 = вниз)
@@ -66,10 +79,6 @@ const PipeGame = () => {
                 tile.activeColors = Array.from(new Set([...tile.activeColors, source.color]));
                 visited.add(`${currentIndex}-${source.name}`);
 
-                // Если нашли соединение, помечаем плитку цветом
-                tile.activeColors = Array.from(new Set([...tile.activeColors, source.color]));
-                visited.add(`${currentIndex}-${source.name}`);
-
                 // Проверка: достигли ли мы дна в нужной колонке?
                 if (row === ROWS - 1) {
                     const target = TARGETS.find(t => t.col === col && t.color === source.color);
@@ -83,20 +92,46 @@ const PipeGame = () => {
 
                 if (tile.type === TYPES.CROSS) {
                     const oppositeSide = (incomingSide + 2) % 4;
-                    if (activeSides.includes(oppositeSide)) {
-                        sidesToProcess.push(oppositeSide);
-                    } else {
-                        // Find the first available side that is not the incoming side
-                        const availableOutgoingSides = activeSides.filter(side => side !== incomingSide);
-                        if (availableOutgoingSides.length > 0) {
-                            sidesToProcess.push(availableOutgoingSides[0]);
+                    let foundOutgoingSide: number | null = null;
+
+                    // 1. Проверяем противоположную сторону
+                    const {nextR: oppR, nextC: oppC} = getNeighborCoords(row, col, oppositeSide);
+                    if (isValidCoord(oppR, oppC)) {
+                        const neighborTile = newGrid[oppR * COLS + oppC];
+                        // The incoming side for the neighbor is the opposite of the current tile's outgoing side
+                        const incomingSideForNeighbor = (oppositeSide + 2) % 4;
+                        if (neighborTile && getActiveSides(neighborTile.type, neighborTile.rotation).includes(incomingSideForNeighbor)) {
+                            foundOutgoingSide = oppositeSide;
                         }
                     }
+
+                    // 2. Если противоположная сторона не найдена или не соединена, ищем первый доступный соединенный выход
+                    if (foundOutgoingSide === null) {
+                        // Filter activeSides to exclude the incoming side
+                        const potentialOutgoingSides = activeSides.filter(side => side !== incomingSide);
+
+                        for (const side of potentialOutgoingSides) {
+                            const {nextR, nextC} = getNeighborCoords(row, col, side);
+                            if (isValidCoord(nextR, nextC)) {
+                                const neighborTile = newGrid[nextR * COLS + nextC];
+                                const incomingSideForNeighbor = (side + 2) % 4;
+                                if (neighborTile && getActiveSides(neighborTile.type, neighborTile.rotation).includes(incomingSideForNeighbor)) {
+                                    foundOutgoingSide = side;
+                                    break; // Нашли первый соединенный выход, выходим
+                                }
+                            }
+                        }
+                    }
+
+                    if (foundOutgoingSide !== null) {
+                        sidesToProcess.push(foundOutgoingSide);
+                    }
+
                 } else {
-                    // For other tile types, process all active sides except the incoming one
+                    // Для других типов плиток, обрабатываем все активные стороны, кроме входящей
                     sidesToProcess = activeSides.filter(side => {
-                        // Special handling for source tile (row 0, fromDir 2 means water comes from top, incomingSide 0)
-                        // We don't want to send water back to the "source"
+                        // Особая обработка для исходной плитки (row 0, fromDir 2 означает, что вода поступает сверху, incomingSide 0)
+                        // Мы не хотим отправлять воду обратно к "источнику"
                         if (row === 0 && fromDir === 2 && side === 0) {
                             return false;
                         }
@@ -105,14 +140,10 @@ const PipeGame = () => {
                 }
 
                 sidesToProcess.forEach(side => {
-                    let nextRow = row, nextCol = col;
-                    if (side === 0) nextRow--;
-                    if (side === 1) nextCol++;
-                    if (side === 2) nextRow++;
-                    if (side === 3) nextCol--;
+                    const {nextR, nextC} = getNeighborCoords(row, col, side);
 
-                    if (nextRow >= 0 && nextRow < ROWS && nextCol >= 0 && nextCol < COLS) {
-                        queue.push({row: nextRow, col: nextCol, fromDir: side});
+                    if (isValidCoord(nextR, nextC)) {
+                        queue.push({row: nextR, col: nextC, fromDir: side});
                     }
                 });
             }
