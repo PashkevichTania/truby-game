@@ -141,7 +141,7 @@ const PipeGame = () => {
                 КВЕСТ <span className="text-cyan-500">НА ДР</span>
             </h1>
 
-            <div className="relative p-8 bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl">
+            <div className="relative p-4 md:p-8 bg-slate-900 rounded-3xl border border-slate-800 shadow-2xl">
 
                 {/* ИСТОЧНИКИ (Верх) */}
                 <div className="absolute top-0 left-8 right-8 flex justify-around -translate-y-1/2"
@@ -156,12 +156,16 @@ const PipeGame = () => {
                 </div>
 
                 {/* СЕТКА */}
+                {/* TODO: col row from const */}
                 <div
-                    className="grid gap-2"
-                    style={{
-                        gridTemplateColumns: `repeat(${COLS}, 60px)`,
-                        gridTemplateRows: `repeat(${ROWS}, 60px)`
-                    }}
+                    className={"grid gap-2 " +
+                        "grid-cols-[repeat(7,40px)] grid-rows-[repeat(6,40px)] " +
+                        "sm:grid-cols-[repeat(7,40px)] sm:grid-rows-[repeat(6,40px)] " +
+                        "md:grid-cols-[repeat(7,50px)] md:grid-rows-[repeat(6,50px)] " +
+                        "lg:grid-cols-[repeat(7,60px)] lg:grid-rows-[repeat(6,60px)] " +
+                        "xl:grid-cols-[repeat(7,80px)] xl:grid-rows-[repeat(6,80px)] " +
+                        "2xl:grid-cols-[repeat(7,100px)] 2xl:grid-rows-[repeat(6,100px)] "
+                }
                 >
                     {grid.map((tile, i) => (
                         <TileComponent key={i} tile={tile} onClick={() => handleTileClick(i)}/>
