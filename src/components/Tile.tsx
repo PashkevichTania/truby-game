@@ -20,11 +20,17 @@ const Tile = ({ tile, onClick }: { tile: Tile, onClick: VoidFunction }) => {
                 <Pipe type={tile.type} colors={tile.activeColors} />
             </div>
 
-            {/* Маленький индикатор, если через плитку течет вода */}
-            {/*{tile.activeColors.length > 0 && (*/}
-            {/*    <div className="absolute top-1 right-1 w-2 h-2 rounded-full animate-pulse"*/}
-            {/*         style={{ backgroundColor: tile.activeColors[0] }} />*/}
-            {/*)}*/}
+             {/*Маленький индикатор, если через плитку течет вода*/}
+            {tile.activeColors.length > 0 && (
+               <div className={'absolute top-1 right-1 flex items-center justify-center flex-wrap gap-1 w-5 h-5'}>
+                   {
+                       tile.activeColors.map((color) => (
+                           <div key={color} className="w-2 h-2 rounded-full animate-pulse"
+                                style={{backgroundColor: color}} />
+                       ))
+                   }
+               </div>
+            )}
         </div>
     );
 };
