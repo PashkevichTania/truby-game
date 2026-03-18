@@ -5,6 +5,8 @@ import CarIcon from './assets/car.svg?react'
 import SwitchIcon from './assets/switch.svg?react'
 // @ts-ignore
 import CakeIcon from './assets/cake.svg?react'
+// @ts-ignore
+import HouseIcon from './assets/house.svg?react'
 
 // Типы труб
 export const TYPES: Record<string, Types> = {
@@ -40,6 +42,6 @@ export const SOURCES = [
 
 export const TARGETS = [
     {col: 1, color: '#4ade80', name: 'green', icon: CakeIcon },
-    {col: 3, color: '#f87171', name: 'red', icon: CarIcon },
+    {col: 3, color: '#f87171', name: 'red', icon: HouseIcon },
     {col: 5, color: '#60a5fa', name: 'blue', icon: SwitchIcon },
 ];
